@@ -23,8 +23,9 @@ spec = describe "GET /hello" $ do
     simpleStatus response `shouldBe` status200
     lookup hContentType (simpleHeaders response) `shouldSatisfy` maybe False (BS.isInfixOf "application/json")
 
-    let responseJson = simpleBody response
-    let expectedData = HelloResponse "Hello, Magic Link!"
-    case decode responseJson of
-      Just gotData -> gotData `shouldBe` expectedData
-      Nothing -> expectationFailure $ "Failed to decode response body. Raw response:\n" ++ BL8.unpack responseJson
+    let responseBody = simpleBody response
+    decodedResponse <- case decode responseBody of
+      Just decoded -> return decoded
+      Nothing -> fail $ "Failed to decode response body. Raw response:\n" ++ BL8.unpack responseBody
+
+    decodedResponse `shouldBe` HelloResponse "Hello, Magic Link!"
