@@ -5,13 +5,15 @@
 
 module MyLib (app, HelloResponse (..)) where
 
-import Data.Aeson (ToJSON)
+import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
 import Servant
 
 data HelloResponse = HelloResponse {message :: String} deriving (Show, Eq, Generic)
 
 instance ToJSON HelloResponse
+
+instance FromJSON HelloResponse
 
 type API = "hello" :> Get '[JSON] HelloResponse
 
