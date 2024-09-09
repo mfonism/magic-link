@@ -21,7 +21,13 @@ library
     exposed-modules:  MyLib
     -- other-modules:
     -- other-extensions:
-    build-depends:    base ^>=4.17.2.1
+    build-depends:
+        base ^>=4.17.2.1,
+        aeson,
+        servant,
+        servant-server,
+        warp,
+        wai,
     hs-source-dirs:   src
     default-language: GHC2021
 
@@ -32,7 +38,8 @@ executable magic-link
     -- other-extensions:
     build-depends:
         base ^>=4.17.2.1,
-        magic-link
+        magic-link,
+        warp,
 
     hs-source-dirs:   app
     default-language: GHC2021
@@ -47,4 +54,12 @@ test-suite magic-link-test
     main-is:          Main.hs
     build-depends:
         base ^>=4.17.2.1,
-        magic-link
+        magic-link,
+        aeson,
+        bytestring,
+        hspec,
+        http-types,
+        magic-link,
+        servant-server,
+        wai,
+        wai-extra,
