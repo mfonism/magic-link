@@ -52,6 +52,7 @@ test-suite magic-link-test
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Main.hs
+    other-modules:    TestUtils
     build-depends:
         base ^>=4.17.2.1,
         magic-link,
