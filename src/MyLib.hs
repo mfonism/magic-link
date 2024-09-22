@@ -9,7 +9,7 @@ import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
 import Servant
 
-data HelloResponse = HelloResponse {message :: String} deriving (Show, Eq, Generic)
+newtype HelloResponse = HelloResponse {message :: String} deriving (Show, Eq, Generic)
 
 instance ToJSON HelloResponse
 
