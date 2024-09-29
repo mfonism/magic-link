@@ -18,7 +18,11 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  MyLib
+    exposed-modules:
+        App
+        API.Signup.Handler
+        API.Signup.Request
+        API.Signup.Response
     -- other-modules:
     -- other-extensions:
     build-depends:
@@ -47,12 +51,13 @@ executable magic-link
 test-suite magic-link-test
     import:           warnings
     default-language: GHC2021
-    -- other-modules:
-    -- other-extensions:
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Main.hs
-    other-modules:    TestUtils
+    other-modules:
+        API.Signup.HandlerSpec
+        TestUtils
+    -- other-extensions:
     build-depends:
         base ^>=4.17.2.1,
         magic-link,
