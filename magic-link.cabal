@@ -19,10 +19,12 @@ common warnings
 library
     import:           warnings
     exposed-modules:
-        App
+        API.HealthCheck
         API.Signup.Handler
         API.Signup.Request
         API.Signup.Response
+        App
+        Server
     -- other-modules:
     -- other-extensions:
     build-depends:
@@ -55,6 +57,7 @@ test-suite magic-link-test
     hs-source-dirs:   test
     main-is:          Main.hs
     other-modules:
+        API.HealthCheckSpec
         API.Signup.HandlerSpec
         TestUtils
     -- other-extensions:
