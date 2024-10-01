@@ -1,6 +1,6 @@
 module Main where
 
-import MyLib (app)
+import App (app)
 import Network.Wai.Handler.Warp (run)
 
 main :: IO ()
