@@ -1,14 +1,16 @@
 {-# LANGUAGE DisambiguateRecordFields #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module API.Signup.HandlerSpec where
 
 import API.Signup.Request (SignupRequest (..))
-import API.Signup.Response (SignupResponse (..))
+import API.Signup.Response (SignupFailureReason (..), SignupResponse (..))
 import App (app)
 import Control.Monad (forM_)
 import Network.HTTP.Types (status200)
 import Test.Hspec
 import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runPostRequest)
+import Text.Email.Validate qualified as EmailValidate
 
 handlerSpec :: Spec
 handlerSpec =
@@ -26,10 +28,7 @@ handleSignupForValidEmail =
 
     decodedResponse <- decodeJsonResponse response
     decodedResponse
-      `shouldBe` SignupResponse
-        { email = "magic@link.poof",
-          magicLinkSent = True
-        }
+      `shouldBe` SignupSuccess (EmailValidate.unsafeEmailAddress "magic" "link.poof")
 
 handleSignupForInvalidEmail :: Spec
 handleSignupForInvalidEmail =
@@ -58,7 +57,4 @@ handleSignupForInvalidEmail =
 
         decodedResponse <- decodeJsonResponse response
         decodedResponse
-          `shouldBe` SignupResponse
-            { email = invalidEmail,
-              magicLinkSent = False
-            }
+          `shouldBe` SignupFailure (InvalidEmail invalidEmail)

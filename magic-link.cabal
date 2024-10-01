@@ -34,6 +34,7 @@ library
         email-validate,
         servant,
         servant-server,
+        text,
         warp,
         wai,
     hs-source-dirs:   src
@@ -68,6 +69,7 @@ test-suite magic-link-test
         magic-link,
         aeson,
         bytestring,
+        email-validate,
         hspec,
         http-types,
         magic-link,
