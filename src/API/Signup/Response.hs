@@ -2,6 +2,7 @@
 
 module API.Signup.Response (SignupResponse (..), SignupFailureReason (..)) where
 
+import Data.Text (Text)
 import Data.Aeson qualified
 import Data.Aeson.Types (Parser)
 import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
@@ -18,7 +19,7 @@ instance Data.Aeson.FromJSON SignupResponse
 
 instance Data.Aeson.ToJSON SignupResponse
 
-data SignupFailureReason = InvalidEmail String
+newtype SignupFailureReason = InvalidEmail Text
   deriving (Eq, Show, Generic)
 
 instance Data.Aeson.FromJSON SignupFailureReason

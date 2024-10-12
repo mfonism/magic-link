@@ -82,5 +82,6 @@ test-suite magic-link-test
         http-types,
         magic-link,
         servant-server,
+        text,
         wai,
         wai-extra,

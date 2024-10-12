@@ -2,9 +2,10 @@ module API.Signup.Request (SignupRequest (..)) where
 
 import Data.Aeson qualified
 import GHC.Generics (Generic)
+import Data.Text (Text)
 
 newtype SignupRequest = SignupRequest
-  { email :: String
+  { email :: Text
   }
   deriving (Generic)
 

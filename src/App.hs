@@ -4,9 +4,10 @@ import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
 import Servant
 import Server qualified
+import Data.Text (Text)
 
 newtype HelloResponse = HelloResponse
-  { message :: String
+  { message :: Text
   }
   deriving (Show, Eq, Generic)
 

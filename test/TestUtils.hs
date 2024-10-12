@@ -9,9 +9,10 @@ module TestUtils
   )
 where
 
+import Data.Text (Text)
+import Data.Text.Encoding qualified as Text
 import Data.Aeson qualified
 import Data.ByteString qualified as BS
-import Data.ByteString.Char8 qualified as B8
 import Data.ByteString.Lazy.Char8 qualified as BL8
 import Network.HTTP.Types (Status, hContentType)
 import Network.Wai (Request (requestHeaders, requestMethod))
@@ -19,11 +20,11 @@ import Network.Wai.Test (SRequest (..), SResponse, defaultRequest, request, runS
 import Servant
 import Test.Hspec (Expectation, shouldBe, shouldSatisfy)
 
-type Path = String
+type Path = Text
 
 runRequest :: Path -> Application -> IO SResponse
 runRequest path app = do
-  let req = setPath defaultRequest (B8.pack path)
+  let req = setPath defaultRequest (Text.encodeUtf8 path)
   runSession (request req) app
 
 runPostRequest :: (Data.Aeson.ToJSON a) => Path -> a -> Application -> IO SResponse
@@ -33,7 +34,7 @@ runPostRequest path body app = do
           { requestMethod = "POST",
             requestHeaders = [("Content-Type", "application/json")]
           }
-      req' = setPath req (B8.pack path)
+      req' = setPath req (Text.encodeUtf8 path)
       sreq =
         SRequest
           { simpleRequest = req',
