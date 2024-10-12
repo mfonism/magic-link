@@ -23,12 +23,16 @@ library
         API.Signup.Handler
         API.Signup.Request
         API.Signup.Response
+        Email.Data
+        Email.Producer
+        Infra.RabbitMQ
         App
         Server
     -- other-modules:
     -- other-extensions:
     build-depends:
         base ^>=4.17.2.1,
+        amqp,
         aeson,
         bytestring,
         email-validate,
@@ -39,6 +43,8 @@ library
         wai,
     hs-source-dirs:   src
     default-language: GHC2021
+    default-extensions:
+        OverloadedRecordDot
 
 executable magic-link
     import:           warnings
@@ -62,10 +68,12 @@ test-suite magic-link-test
     other-modules:
         API.HealthCheckSpec
         API.Signup.HandlerSpec
+        Email.ProducerSpec
         TestUtils
     -- other-extensions:
     build-depends:
         base ^>=4.17.2.1,
+        amqp,
         magic-link,
         aeson,
         bytestring,
