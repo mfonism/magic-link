@@ -45,6 +45,7 @@ library
     default-language: GHC2021
     default-extensions:
         OverloadedRecordDot
+        OverloadedStrings
 
 executable magic-link
     import:           warnings
@@ -62,6 +63,8 @@ executable magic-link
 test-suite magic-link-test
     import:           warnings
     default-language: GHC2021
+    default-extensions:
+        OverloadedStrings
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Main.hs

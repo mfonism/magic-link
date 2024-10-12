@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Infra.RabbitMQ (connectToRabbitMQ, disconnectFromRabbitMQ) where
 
 import Network.AMQP

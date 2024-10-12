@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Email.Producer where
 
 import Data.Aeson qualified

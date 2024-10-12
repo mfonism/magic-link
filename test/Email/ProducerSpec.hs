@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Email.ProducerSpec where
 
 import Data.Aeson (decode)

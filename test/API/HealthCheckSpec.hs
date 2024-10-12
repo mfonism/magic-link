@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module API.HealthCheckSpec (handlerSpec) where
 
 import API.HealthCheck (HealthCheckResponse (..))

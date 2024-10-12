@@ -1,5 +1,4 @@
 {-# LANGUAGE DisambiguateRecordFields #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module API.Signup.HandlerSpec where
 
