@@ -7,11 +7,11 @@ module TestUtils
   )
 where
 
-import Data.Text (Text)
-import Data.Text.Encoding qualified as Text
 import Data.Aeson qualified
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as BL8
+import Data.Text (Text)
+import Data.Text.Encoding qualified as Text
 import Network.HTTP.Types (Status, hContentType)
 import Network.Wai (Request (requestHeaders, requestMethod))
 import Network.Wai.Test (SRequest (..), SResponse, defaultRequest, request, runSession, setPath, simpleBody, simpleHeaders, simpleStatus, srequest)

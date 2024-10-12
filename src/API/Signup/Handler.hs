@@ -2,9 +2,9 @@ module API.Signup.Handler (signupHandler) where
 
 import API.Signup.Request (SignupRequest (..))
 import API.Signup.Response (SignupFailureReason (..), SignupResponse (..))
+import Data.Text.Encoding qualified as Text
 import Servant (Handler)
 import Text.Email.Validate qualified
-import Data.Text.Encoding qualified as Text 
 
 signupHandler :: SignupRequest -> Handler SignupResponse
 signupHandler (SignupRequest email) =

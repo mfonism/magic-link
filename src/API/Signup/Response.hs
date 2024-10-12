@@ -2,9 +2,9 @@
 
 module API.Signup.Response (SignupResponse (..), SignupFailureReason (..)) where
 
-import Data.Text (Text)
 import Data.Aeson qualified
 import Data.Aeson.Types (Parser)
+import Data.Text (Text)
 import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
 import Data.Text.Encoding.Error (lenientDecode)
 import GHC.Generics (Generic)

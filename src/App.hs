@@ -1,10 +1,10 @@
 module App (app, HelloResponse (..)) where
 
 import Data.Aeson (FromJSON, ToJSON)
+import Data.Text (Text)
 import GHC.Generics (Generic)
 import Servant
 import Server qualified
-import Data.Text (Text)
 
 newtype HelloResponse = HelloResponse
   { message :: Text
