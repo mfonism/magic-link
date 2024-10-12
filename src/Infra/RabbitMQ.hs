@@ -9,4 +9,4 @@ connectToRabbitMQ = do
   return (conn, chan)
 
 disconnectFromRabbitMQ :: Connection -> IO ()
-disconnectFromRabbitMQ conn = closeConnection conn
+disconnectFromRabbitMQ = closeConnection
