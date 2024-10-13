@@ -30,9 +30,10 @@ testEmailEnqueueing = do
 
       case gotMsg of
         Just (msg, envelope) -> do
-          let decodedEmail = decode (msgBody msg) :: Maybe Email
-          decodedEmail `shouldBe` Just email
           ackEnv envelope
+          _ <- purgeQueue readChan "email_queue"
+
+          decode (msgBody msg) `shouldBe` Just email
         Nothing -> expectationFailure "No message found in email queue"
 
       closeChannel readChan

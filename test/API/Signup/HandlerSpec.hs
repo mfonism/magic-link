@@ -4,8 +4,13 @@ module API.Signup.HandlerSpec where
 
 import API.Signup.Request (SignupRequest (..))
 import API.Signup.Response (SignupFailureReason (..), SignupResponse (..))
-import App (app)
+import App (mkApp)
+import App.Context qualified
 import Control.Monad (forM_)
+import Data.Aeson (decode)
+import Data.Pool (withResource)
+import Email.Data (Email (..))
+import Network.AMQP
 import Network.HTTP.Types (status200)
 import Test.Hspec
 import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runPostRequest)
@@ -18,9 +23,12 @@ handlerSpec =
     handleSignupForInvalidEmail
 
 handleSignupForValidEmail :: Spec
-handleSignupForValidEmail =
+handleSignupForValidEmail = do
+  appCtx <- runIO App.Context.initialize
+  let app = mkApp appCtx
+      signupRequest = SignupRequest "magic@link.poof"
+
   it "responds with JSON indicating that a signup request has been addressed" $ do
-    let signupRequest = SignupRequest "magic@link.poof"
     response <- runPostRequest "/signup" signupRequest app
     assertStatus status200 response
     assertJsonContentType response
@@ -29,10 +37,37 @@ handleSignupForValidEmail =
     decodedResponse
       `shouldBe` SignupSuccess (EmailValidate.unsafeEmailAddress "magic" "link.poof")
 
+  it "enqueues a signup email" $ do
+    response <- runPostRequest "/signup" signupRequest app
+    assertStatus status200 response
+    assertJsonContentType response
+
+    withResource appCtx.rabbitMQPool $ \conn -> do
+      chan <- openChannel conn
+      gotMsg <- getMsg chan Ack "email_queue"
+
+      case gotMsg of
+        Just (msg, envelope) -> do
+          ackEnv envelope
+          _ <- purgeQueue chan "email_queue"
+
+          let expectedEmail =
+                Email
+                  { to = "magic@link.poof",
+                    subject = "Signup link",
+                    body = "Click on this link to signup!"
+                  }
+          decode (msgBody msg) `shouldBe` Just expectedEmail
+        Nothing -> expectationFailure "No message found in email queue"
+
+      closeChannel chan
+
 handleSignupForInvalidEmail :: Spec
 handleSignupForInvalidEmail =
   describe "with invalid email addresses" $ do
-    let invalidEmails =
+    appCtx <- runIO App.Context.initialize
+    let app = mkApp appCtx
+        invalidEmails =
           [ "plainaddress", -- Missing @ symbol
             "@example.com", -- Missing local part (username) before @
             "john@@example.com", -- Multiple @ symbols

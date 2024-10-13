@@ -1,5 +1,6 @@
-module App (app, HelloResponse (..)) where
+module App (mkApp, HelloResponse (..)) where
 
+import App.Context (AppContext)
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
@@ -15,5 +16,5 @@ instance ToJSON HelloResponse
 
 instance FromJSON HelloResponse
 
-app :: Application
-app = serve (Proxy :: Proxy Server.API) Server.server
+mkApp :: AppContext -> Application
+mkApp appCtx = serve (Proxy :: Proxy Server.API) $ Server.mkServer appCtx
