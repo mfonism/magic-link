@@ -26,6 +26,7 @@ library
         App.Context
         Email.Data
         Email.Producer
+        Infra.RabbitMQ
         App
         Server
     -- other-modules:
@@ -36,6 +37,7 @@ library
         aeson,
         bytestring,
         email-validate,
+        resource-pool,
         servant,
         servant-server,
         text,
@@ -85,6 +87,7 @@ test-suite magic-link-test
         hspec,
         http-types,
         magic-link,
+        resource-pool,
         servant-server,
         text,
         wai,

@@ -2,6 +2,7 @@ module Email.ProducerSpec where
 
 import App.Context qualified
 import Data.Aeson (decode)
+import Data.Pool (withResource)
 import Email.Data (Email (..))
 import Email.Producer (enqueueEmail)
 import Network.AMQP
@@ -11,18 +12,21 @@ testEmailEnqueueing :: Spec
 testEmailEnqueueing = do
   appCtx <- runIO App.Context.initialize
 
-  describe "Email Enqueueing" $ do
-    it "sends an email to the email queue" $ do
-      let email =
-            Email
-              { to = "magic@link.com",
-                subject = "Hey there, user!",
-                body = "This is magic link!!!"
-              }
-      enqueueEmail appCtx email
+  it "sends an email to the email queue" $ do
+    let email =
+          Email
+            { to = "magic@link.com",
+              subject = "Hey there, user!",
+              body = "This is magic link!!!"
+            }
 
-      chan <- openChannel appCtx.rabbitMQConnection
-      gotMsg <- getMsg chan Ack "email_queue"
+    withResource appCtx.rabbitMQPool $ \conn -> do
+      sendChan <- openChannel conn
+      enqueueEmail sendChan email
+      closeChannel sendChan
+
+      readChan <- openChannel conn
+      gotMsg <- getMsg readChan Ack "email_queue"
 
       case gotMsg of
         Just (msg, envelope) -> do
@@ -31,4 +35,4 @@ testEmailEnqueueing = do
           ackEnv envelope
         Nothing -> expectationFailure "No message found in email queue"
 
-      closeChannel chan
+      closeChannel readChan

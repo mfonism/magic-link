@@ -1,15 +1,13 @@
 module App.Context (AppContext (..), initialize) where
 
-import Network.AMQP (Connection, openConnection)
+import Infra.RabbitMQ qualified
 
 newtype AppContext = AppContext
-  { rabbitMQConnection :: Connection
+  { rabbitMQPool :: Infra.RabbitMQ.Pool
   }
 
 initialize :: IO AppContext
 initialize = do
-  connRabbitMQ <- openConnection "127.0.0.1" "/" "guest" "guest"
-  return $
-    AppContext
-      { rabbitMQConnection = connRabbitMQ
-      }
+  rabbitMQPool <- Infra.RabbitMQ.newPool
+  return
+    AppContext {rabbitMQPool}
