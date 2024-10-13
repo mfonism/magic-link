@@ -23,9 +23,9 @@ library
         API.Signup.Handler
         API.Signup.Request
         API.Signup.Response
+        App.Context
         Email.Data
         Email.Producer
-        Infra.RabbitMQ
         App
         Server
     -- other-modules:
@@ -64,6 +64,7 @@ test-suite magic-link-test
     import:           warnings
     default-language: GHC2021
     default-extensions:
+        OverloadedRecordDot
         OverloadedStrings
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
