@@ -7,10 +7,11 @@ import Email.Data (Email (..))
 import Email.Producer (enqueueEmail)
 import Network.AMQP
 import Test.Hspec
+import TestUtils (testAppCtx)
 
 testEmailEnqueueing :: Spec
 testEmailEnqueueing = do
-  appCtx <- runIO App.Context.initialize
+  appCtx <- runIO testAppCtx
 
   it "sends an email to the email queue" $ do
     let email =

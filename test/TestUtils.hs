@@ -4,9 +4,14 @@ module TestUtils
     decodeJsonResponse,
     runRequest,
     runPostRequest,
+    testApp,
+    testAppCtx,
   )
 where
 
+import App qualified
+import App.Context (AppContext)
+import App.Context qualified as AppContext
 import Data.Aeson qualified
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as BL8
@@ -19,6 +24,13 @@ import Servant
 import Test.Hspec (Expectation, shouldBe, shouldSatisfy)
 
 type Path = Text
+
+testAppCtx :: IO AppContext
+testAppCtx = AppContext.initialize
+
+testApp :: IO Application
+testApp = do
+  App.mkApp <$> testAppCtx
 
 runRequest :: Path -> Application -> IO SResponse
 runRequest path app = do

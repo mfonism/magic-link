@@ -1,16 +1,13 @@
 module API.HealthCheckSpec (handlerSpec) where
 
 import API.HealthCheck (HealthCheckResponse (..))
-import App (mkApp)
-import App.Context qualified as AppContext
 import Network.HTTP.Types (status200)
 import Test.Hspec
-import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runRequest)
+import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runRequest, testApp)
 
 handlerSpec :: Spec
 handlerSpec = describe "GET /health-check" $ do
-  appCtx <- runIO AppContext.initialize
-  let app = mkApp appCtx
+  app <- runIO testApp
 
   it "responds with JSON containing health status" $ do
     response <- runRequest "/health-check" app

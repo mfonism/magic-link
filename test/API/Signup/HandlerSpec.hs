@@ -4,7 +4,6 @@ module API.Signup.HandlerSpec where
 
 import API.Signup.Request (SignupRequest (..))
 import API.Signup.Response (SignupFailureReason (..), SignupResponse (..))
-import App (mkApp)
 import App.Context qualified
 import Control.Monad (forM_)
 import Data.Aeson (decode)
@@ -13,7 +12,7 @@ import Email.Data (Email (..))
 import Network.AMQP
 import Network.HTTP.Types (status200)
 import Test.Hspec
-import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runPostRequest)
+import TestUtils (assertJsonContentType, assertStatus, decodeJsonResponse, runPostRequest, testApp, testAppCtx)
 import Text.Email.Validate qualified as EmailValidate
 
 handlerSpec :: Spec
@@ -24,9 +23,8 @@ handlerSpec =
 
 handleSignupForValidEmail :: Spec
 handleSignupForValidEmail = do
-  appCtx <- runIO App.Context.initialize
-  let app = mkApp appCtx
-      signupRequest = SignupRequest "magic@link.poof"
+  app <- runIO testApp
+  let signupRequest = SignupRequest "magic@link.poof"
 
   it "responds with JSON indicating that a signup request has been addressed" $ do
     response <- runPostRequest "/signup" signupRequest app
@@ -42,6 +40,7 @@ handleSignupForValidEmail = do
     assertStatus status200 response
     assertJsonContentType response
 
+    appCtx <- testAppCtx
     withResource appCtx.rabbitMQPool $ \conn -> do
       chan <- openChannel conn
       gotMsg <- getMsg chan Ack "email_queue"
@@ -65,9 +64,8 @@ handleSignupForValidEmail = do
 handleSignupForInvalidEmail :: Spec
 handleSignupForInvalidEmail =
   describe "with invalid email addresses" $ do
-    appCtx <- runIO App.Context.initialize
-    let app = mkApp appCtx
-        invalidEmails =
+    app <- runIO testApp
+    let invalidEmails =
           [ "plainaddress", -- Missing @ symbol
             "@example.com", -- Missing local part (username) before @
             "john@@example.com", -- Multiple @ symbols
