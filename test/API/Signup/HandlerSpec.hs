@@ -9,6 +9,7 @@ import Control.Monad (forM_)
 import Data.Aeson (decode)
 import Data.Pool (withResource)
 import Email.Data (Email (..))
+import Infra.RabbitMQ qualified as RabbitMQ
 import Network.AMQP
 import Network.HTTP.Types (status200)
 import Test.Hspec
@@ -43,13 +44,11 @@ handleSignupForValidEmail = do
     appCtx <- testAppCtx
     withResource appCtx.rabbitMQPool $ \conn -> do
       chan <- openChannel conn
-      gotMsg <- getMsg chan Ack "email_queue"
+      let queueName = RabbitMQ.queueName RabbitMQ.EmailQueue
+      gotMsg <- getMsg chan NoAck queueName
 
       case gotMsg of
-        Just (msg, envelope) -> do
-          ackEnv envelope
-          _ <- purgeQueue chan "email_queue"
-
+        Just (msg, _) -> do
           let expectedEmail =
                 Email
                   { to = "magic@link.poof",

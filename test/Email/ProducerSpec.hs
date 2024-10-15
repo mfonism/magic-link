@@ -5,6 +5,7 @@ import Data.Aeson (decode)
 import Data.Pool (withResource)
 import Email.Data (Email (..))
 import Email.Producer (enqueueEmail)
+import Infra.RabbitMQ qualified as RabbitMQ
 import Network.AMQP
 import Test.Hspec
 import TestUtils (testAppCtx)
@@ -27,13 +28,11 @@ testEmailEnqueueing = do
       closeChannel sendChan
 
       readChan <- openChannel conn
-      gotMsg <- getMsg readChan Ack "email_queue"
+      let queueName = RabbitMQ.queueName RabbitMQ.EmailQueue
+      gotMsg <- getMsg readChan NoAck queueName
 
       case gotMsg of
-        Just (msg, envelope) -> do
-          ackEnv envelope
-          _ <- purgeQueue readChan "email_queue"
-
+        Just (msg, _) -> do
           decode (msgBody msg) `shouldBe` Just email
         Nothing -> expectationFailure "No message found in email queue"
 

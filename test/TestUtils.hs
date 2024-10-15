@@ -6,6 +6,7 @@ module TestUtils
     runPostRequest,
     testApp,
     testAppCtx,
+    purgeAllQueues,
   )
 where
 
@@ -19,6 +20,8 @@ import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as BL8
 import Data.Text (Text)
 import Data.Text.Encoding qualified as Text
+import Infra.RabbitMQ qualified as RabbitMQ
+import Network.AMQP
 import Network.HTTP.Types (Status, hContentType)
 import Network.Wai (Request (requestHeaders, requestMethod))
 import Network.Wai.Test (SRequest (..), SResponse, defaultRequest, request, runSession, setPath, simpleBody, simpleHeaders, simpleStatus, srequest)
@@ -77,3 +80,9 @@ decodeJsonResponse response = do
       fail $
         "Failed to decode response body. Raw response:\n"
           ++ BL8.unpack responseBody
+
+purgeAllQueues :: Connection -> IO ()
+purgeAllQueues conn = do
+  chan <- openChannel conn
+  mapM_ (purgeQueue chan . RabbitMQ.queueName) [minBound .. maxBound]
+  putStrLn "Purged all queues"
