@@ -12,6 +12,8 @@ where
 import App qualified
 import App.Context (AppContext)
 import App.Context qualified as AppContext
+import Config qualified
+import Config.Environment qualified
 import Data.Aeson qualified
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as BL8
@@ -26,7 +28,11 @@ import Test.Hspec (Expectation, shouldBe, shouldSatisfy)
 type Path = Text
 
 testAppCtx :: IO AppContext
-testAppCtx = AppContext.initialize
+testAppCtx = do
+  let env = Config.Environment.Test
+  putStrLn $ "In " ++ show env ++ " mode"
+  config <- Config.loadConfig env
+  AppContext.initialize config
 
 testApp :: IO Application
 testApp = do

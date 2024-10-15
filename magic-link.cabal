@@ -24,10 +24,12 @@ library
         API.Signup.Request
         API.Signup.Response
         App.Context
+        Config.Environment
         Email.Data
         Email.Producer
         Infra.RabbitMQ
         App
+        Config
         Server
     -- other-modules:
     -- other-extensions:
@@ -36,6 +38,7 @@ library
         amqp,
         aeson,
         bytestring,
+        dotenv,
         email-validate,
         resource-pool,
         servant,
@@ -43,6 +46,7 @@ library
         text,
         warp,
         wai,
+        yaml,
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions:

@@ -1,0 +1,5 @@
+rabbitmq:
+  host: "localhost"
+  user: "guest"
+  password: "guest"
+  vhost: "/"

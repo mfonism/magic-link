@@ -1,0 +1,5 @@
+rabbitmq:
+  host: "localhost"
+  user: "guest"
+  password: "guest"
+  vhost: "/test" # this virtual host most be created in RabbitMQ before running tests

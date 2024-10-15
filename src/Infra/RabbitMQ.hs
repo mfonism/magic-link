@@ -1,14 +1,15 @@
 module Infra.RabbitMQ where
 
+import Config qualified
 import Data.Pool qualified
 import Network.AMQP (Connection)
 import Network.AMQP qualified
 
 type Pool = Data.Pool.Pool Connection
 
-newPool :: IO Pool
-newPool = do
-  let create = Network.AMQP.openConnection "127.0.0.1" "/" "guest" "guest"
+newPool :: Config.RabbitMQConfig -> IO Pool
+newPool config = do
+  let create = Network.AMQP.openConnection config.host config.vhost config.user config.password
       destroy = Network.AMQP.closeConnection
       idleTime = 5 * 60
       maxConnections = 10
